@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Карта мышления — философия и психология</title>
+<meta name="description" content="Авторский тест о том, как ты работаешь с истиной, неопределённостью, моралью и собственными убеждениями.">
+<meta name="theme-color" content="#eef5ff">
+<style>
+:root{
+  --bg:oklch(0.965 0.018 254);--fg:oklch(0.235 0.035 258);--mute:oklch(0.50 0.035 258);
+  --accent:oklch(0.52 0.17 262);--line:oklch(0.85 0.028 254);--danger:oklch(0.56 0.19 28);
+  --r-0:0;--r-sm:6px;--r-md:14px;--sheet:color-mix(in oklch,var(--bg) 68%,white);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;letter-spacing:-.01em}
+button,textarea{font:inherit}
+button{min-height:44px}
+button:focus-visible,textarea:focus-visible{outline:3px solid color-mix(in oklch,var(--accent) 65%,white);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+.skip-link{position:fixed;top:8px;left:8px;z-index:10;transform:translateY(-160%);background:var(--fg);color:var(--bg);padding:10px 12px;border-radius:var(--r-sm)}
+.skip-link:focus{transform:none}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 72px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r-md);padding:clamp(20px,5vw,52px);min-height:min(760px,calc(100svh - 48px))}
+.wordmark{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:700;font-size:20px;letter-spacing:-.025em}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:clamp(30px,7vw,72px)}
+.data{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;letter-spacing:0;color:var(--mute);font-variant-numeric:tabular-nums}
+h1{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:clamp(2.6rem,11vw,5.6rem);line-height:.9;letter-spacing:-.045em;margin:0;max-width:760px}
+h2{font-size:clamp(1.45rem,4vw,2rem);line-height:1.15;letter-spacing:-.035em;margin:0 0 18px}
+h3{font-size:1rem;margin:0 0 6px}
+p{line-height:1.62;margin:0 0 18px}.muted{color:var(--mute)}.small{font-size:13px}.measure{max-width:680px}
+.intro-copy{font-size:clamp(1.05rem,2.5vw,1.25rem);margin:24px 0 28px}
+.facts{display:flex;flex-wrap:wrap;gap:8px 20px;padding:14px 0;border-block:1px solid var(--line);margin:24px 0}
+.facts span{white-space:nowrap}.facts b{font-variant-numeric:tabular-nums}
+.note{max-width:720px;padding-left:16px;border-left:3px solid var(--accent);margin:28px 0;line-height:1.55}
+.button-row,.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:28px}
+.actions{justify-content:space-between}
+.primary,.ghost,.text-button{border-radius:var(--r-sm);padding:12px 16px;cursor:pointer;font-weight:700;border:1px solid transparent}
+.primary{background:var(--accent);color:white}.primary:hover:not(:disabled){background:color-mix(in oklch,var(--accent) 88%,black)}
+.ghost{background:transparent;color:var(--fg);border-color:var(--line)}.ghost:hover{border-color:var(--mute)}
+.text-button{background:transparent;color:var(--mute);padding-inline:4px}.text-button:hover{color:var(--fg)}
+.primary:disabled{opacity:.38;cursor:not-allowed}
+.test-shell{max-width:820px;margin:0 auto}
+.test-mast{margin-bottom:20px}.test-meta{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.progress{height:3px;background:var(--line);overflow:hidden}.progress>div{height:100%;background:var(--accent);width:0;transition:width .22s ease}
+.question{font-size:clamp(1.55rem,5vw,2.55rem);line-height:1.18;letter-spacing:-.035em;margin:clamp(34px,8vw,70px) 0 28px;overflow-wrap:anywhere}
+.options,.likert{display:grid;gap:10px}
+.option{width:100%;min-height:54px;text-align:left;padding:14px 16px;border-radius:var(--r-sm);border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;line-height:1.35;transition:border-color .12s,background-color .12s}
+.option:hover{border-color:var(--mute)}.option.sel{border-color:var(--accent);background:color-mix(in oklch,var(--accent) 8%,var(--sheet));box-shadow:inset 4px 0 0 var(--accent)}
+.likert{grid-template-columns:repeat(5,1fr)}.likert .option{text-align:center;font-size:13px;padding:12px 8px}
+.field-label{display:block;font-weight:700;margin:0 0 10px}
+textarea{width:100%;min-height:190px;background:transparent;border:1px solid var(--line);color:var(--fg);border-radius:var(--r-sm);padding:14px;resize:vertical;line-height:1.5}
+textarea::placeholder{color:color-mix(in oklch,var(--mute) 70%,var(--bg))}
+.hidden{display:none!important}
+.result-head{margin-bottom:38px}.result-head h1{margin-bottom:18px}
+.result-layout{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:clamp(24px,6vw,64px);align-items:start;margin:32px 0 50px}
+.map-wrap{position:sticky;top:18px}.map-frame{border:1px solid var(--line);border-radius:var(--r-md);padding:12px;background:color-mix(in oklch,var(--sheet) 90%,white)}
+#mindMap{display:block;width:100%;height:auto;aspect-ratio:1}
+.analysis{border-top:4px solid var(--accent);padding-top:18px}.analysis-lead{font-size:clamp(1.25rem,3vw,1.55rem);line-height:1.35;font-weight:650}
+.finding{padding:16px 0;border-bottom:1px solid var(--line)}.finding:last-child{border-bottom:0}.finding p{margin:0;color:var(--mute)}
+.section{padding-top:34px;margin-top:34px;border-top:1px solid var(--line)}
+.stats-line{display:flex;gap:10px 24px;flex-wrap:wrap;color:var(--mute);font-size:13px}.stats-line b{color:var(--fg);font-family:"Cascadia Mono",Consolas,monospace}
+.scale{padding:18px 0;border-bottom:1px solid var(--line)}.scale:last-child{border-bottom:0}
+.scalehead{display:flex;justify-content:space-between;gap:12px;align-items:baseline}.scalehead b{font-size:16px}.score{font-family:"Cascadia Mono",Consolas,monospace;font-size:15px;font-weight:700}
+.bar{height:5px;background:var(--line);margin:10px 0}.bar i{display:block;height:100%;background:var(--accent)}.scale p{margin:8px 0 0}
+.philo{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}.choice{padding:16px 0;border-bottom:1px solid var(--line)}.choice p{margin:4px 0 0}
+.open-item{padding:18px 0;border-bottom:1px solid var(--line)}.open-item p{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.limit{font-size:13px;color:var(--mute);margin-top:34px;max-width:720px}
+.error{color:var(--danger);font-weight:650}.status{min-height:20px;margin-top:12px;color:var(--mute);font-size:13px}
+@media(max-width:760px){
+  .wrap{padding:0}.sheet{border:0;border-radius:var(--r-0);min-height:100svh;padding:20px 16px 48px}.mast{margin-bottom:42px}
+  .likert{grid-template-columns:1fr}.likert .option{text-align:left;padding:14px 16px}.actions{position:sticky;bottom:0;background:linear-gradient(transparent 0,var(--sheet) 22%);padding-top:28px;padding-bottom:max(8px,env(safe-area-inset-bottom));margin-inline:-2px}
+  .result-layout{grid-template-columns:1fr}.map-wrap{position:static;max-width:460px;margin:0 auto;width:100%}.philo{grid-template-columns:1fr}
+}
+@media(max-width:420px){.test-meta{align-items:flex-start}.exit-label{display:none}.primary,.ghost{padding-inline:14px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.facts span{white-space:normal}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.progress>div{transition:none}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">К содержанию</a>
+<main id="main" class="wrap">
+<section id="intro" class="sheet" aria-labelledby="introTitle">
+  <div class="mast"><div class="wordmark">Карта мышления</div><div class="data">авторский тест</div></div>
+  <h1 id="introTitle">Как ты строишь картину мира</h1>
+  <p class="intro-copy measure">Не оценка ума и не диагноз. Здесь исследуются твои отношения с истиной, неопределённостью, контролем, моралью, другими людьми и собственным «я».</p>
+  <div class="facts" aria-label="О тесте">
+    <span><b id="count">—</b> вопрос</span><span><b>20–30</b> минут</span><span><b>12</b> шкал</span><span><b>8</b> дилемм</span>
+  </div>
+  <p class="note">Выбирай не правильный ответ, а ближайший к реальному поведению. Пять открытых вопросов можно пропустить.</p>
+  <div class="button-row">
+    <button id="start" class="primary">Начать тест</button>
+    <button id="resume" class="ghost hidden">Продолжить</button>
+  </div>
+  <div id="storageStatus" class="status" role="status" aria-live="polite"></div>
+</section>
+
+<section id="test" class="sheet hidden" aria-label="Вопрос теста">
+  <div class="test-shell">
+    <div class="test-mast">
+      <div class="test-meta">
+        <div><div class="wordmark" id="section">Самоописание</div><div class="data" id="counter">1 / 61</div></div>
+        <button id="exit" class="ghost" aria-label="Сохранить прогресс и выйти"><span class="exit-label">Сохранить и </span>выйти</button>
+      </div>
+      <div class="progress" role="progressbar" aria-label="Прогресс теста" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress"></div></div>
+    </div>
+
+    <div id="statementView" class="hidden">
+      <div class="question" id="statementText" tabindex="-1"></div>
+      <div class="likert" id="likertBox" role="group" aria-label="Насколько утверждение похоже на тебя"></div>
+    </div>
+
+    <div id="dilemmaView" class="hidden">
+      <div class="data" id="dilemmaTitle"></div>
+      <div class="question" id="dilemmaText" tabindex="-1"></div>
+      <div class="options" id="dilemmaOptions" role="group" aria-label="Варианты ответа"></div>
+    </div>
+
+    <div id="openView" class="hidden">
+      <div class="question" id="openText"></div>
+      <label class="field-label" for="openAnswer">Твой ответ <span class="muted">(можно пропустить)</span></label>
+      <textarea id="openAnswer" placeholder="Можно коротко"></textarea>
+    </div>
+
+    <div class="actions">
+      <div><button id="back" class="text-button">Назад</button><button id="skip" class="text-button hidden">Пропустить</button></div>
+      <button id="next" class="primary" disabled>Дальше</button>
+    </div>
+    <div id="testStatus" class="status" role="status" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="results" class="sheet hidden" aria-labelledby="resultTitle">
+  <div class="mast"><div class="wordmark">Карта мышления</div><div class="data">результат</div></div>
+  <header class="result-head">
+    <h1 id="resultTitle">Твой рисунок мышления</h1>
+    <p class="measure muted">Это интерпретация самоотчёта, а не оценка «лучше — хуже».</p>
+    <div class="stats-line"><span><b id="answeredStat">—</b> ответов</span><span><b id="extremeStat">—</b> крайних</span><span><b id="neutralStat">—</b> нейтральных</span></div>
+  </header>
+
+  <div class="result-layout">
+    <div class="map-wrap"><div class="map-frame"><canvas id="mindMap" width="720" height="720" role="img"></canvas></div></div>
+    <article class="analysis" aria-labelledby="analysisTitle">
+      <h2 id="analysisTitle">Что видно в сочетании ответов</h2>
+      <p id="analysisLead" class="analysis-lead"></p>
+      <div id="analysisPoints"></div>
+    </article>
+  </div>
+
+  <section class="section" aria-labelledby="scalesTitle"><h2 id="scalesTitle">12 шкал</h2><div id="scales"></div></section>
+  <section class="section" aria-labelledby="philoTitle"><h2 id="philoTitle">Философские выборы</h2><div class="philo" id="philo"></div></section>
+  <section class="section" aria-labelledby="openTitle"><h2 id="openTitle">Ответы своими словами</h2><div id="openReview"></div></section>
+
+  <p class="limit"><b>Граница метода.</b> Это авторский исследовательский тест, не клиническая психодиагностика и не валидированный личностный опросник. Результат годится как повод для разговора и самопроверки, но не как диагноз.</p>
+  <div class="button-row">
+    <button id="copy" class="primary">Скопировать отчёт</button>
+    <button id="json" class="ghost">Скачать JSON</button>
+    <button id="restart" class="text-button">Пройти заново</button>
+  </div>
+  <div id="resultStatus" class="status" role="status" aria-live="polite"></div>
+</section>
+</main>
+
+<script>
+const DATA={"dims": {"epistemic_humility": {"name": "Эпистемическая скромность", "low": "Склонность быстро фиксировать вывод и защищать его.", "high": "Готовность считать свои убеждения вероятностными и пересматривать их."}, "ambiguity": {"name": "Терпимость к неопределённости", "low": "Неопределённость скорее раздражает; хочется ясной версии происходящего.", "high": "Можно долго удерживать несколько версий без срочного выбора одной."}, "dialectical": {"name": "Диалектическое мышление", "low": "Предпочтение однозначных категорий и непротиворечивых картин.", "high": "Легче видеть, как две противоположные идеи могут одновременно содержать часть правды."}, "autonomy": {"name": "Интеллектуальная автономия", "low": "Социальный консенсус заметно влияет на ощущение истинности и правильности.", "high": "Сильная готовность идти против группы, если собственные основания кажутся лучше."}, "control": {"name": "Потребность в контроле", "low": "Легче принимать то, что часть мира и людей останется непредсказуемой.", "high": "Есть выраженная потребность понимать, предугадывать и удерживать ситуацию."}, "metacognition": {"name": "Метакогнитивность", "low": "Мысль чаще воспринимается как сама реальность.", "high": "Есть привычка наблюдать за тем, как именно возник вывод, эмоция или убеждение."}, "emotion_reason": {"name": "Интеграция эмоций и разума", "low": "Эмоции чаще воспринимаются как помеха рассуждению.", "high": "Эмоции рассматриваются как данные, но не как автоматическое доказательство."}, "perspective": {"name": "Перспективное мышление", "low": "Труднее временно принять чужую картину мира без согласия с ней.", "high": "Легче реконструировать чужую позицию изнутри, даже если она неприятна."}, "existential_agency": {"name": "Экзистенциальная агентность", "low": "Смысл и направление жизни скорее воспринимаются как то, что нужно обнаружить или получить извне.", "high": "Смысл и направление скорее воспринимаются как то, что человек частично создаёт собственными решениями."}, "authenticity": {"name": "Ориентация на аутентичность", "low": "Социальная адаптация и соответствие контексту обычно важнее внутренней последовательности.", "high": "Сильная ценность внутреннего соответствия себе, даже если это создаёт трение с окружением."}, "skepticism": {"name": "Скептицизм к мотивам", "low": "Базовая склонность интерпретировать людей доброжелательно.", "high": "Базовая склонность искать скрытые интересы, самообман и вторичные выгоды."}, "self_challenge": {"name": "Готовность атаковать собственные убеждения", "low": "Сильнее интерес к защите уже сформированной позиции.", "high": "Есть тяга специально искать аргументы, которые могут разрушить собственную модель."}}, "statements": [{"id": "E1", "dim": "epistemic_humility", "text": "Если у меня есть хорошее объяснение, я всё равно держу в голове вероятность, что оно неверно.", "reverse": false}, {"id": "E2", "dim": "epistemic_humility", "text": "Когда я долго думал над вопросом, мне трудно всерьёз рассматривать возможность, что я пришёл к неправильному выводу.", "reverse": true}, {"id": "E3", "dim": "epistemic_humility", "text": "Я спокойно говорю «я не знаю», если данных реально не хватает.", "reverse": false}, {"id": "E4", "dim": "epistemic_humility", "text": "Если моя позиция кажется мне логичной, чужая уверенность редко заставляет меня проверять её заново.", "reverse": true}, {"id": "A1", "dim": "ambiguity", "text": "Мне нормально оставлять вопрос открытым, если доступные данные не позволяют выбрать одну версию.", "reverse": false}, {"id": "A2", "dim": "ambiguity", "text": "Мне неприятно, когда у проблемы нет чёткого объяснения.", "reverse": true}, {"id": "A3", "dim": "ambiguity", "text": "Я могу долго удерживать две несовместимые гипотезы, не выбирая одну преждевременно.", "reverse": false}, {"id": "A4", "dim": "ambiguity", "text": "Даже слабое объяснение лучше, чем отсутствие объяснения.", "reverse": true}, {"id": "D1", "dim": "dialectical", "text": "Иногда две противоположные позиции могут быть одновременно частично верны.", "reverse": false}, {"id": "D2", "dim": "dialectical", "text": "Если две идеи противоречат друг другу, одна из них почти всегда должна быть просто неправильной.", "reverse": true}, {"id": "D3", "dim": "dialectical", "text": "Я часто ищу не победителя в споре, а уровень, на котором обе стороны описывают разные части одной проблемы.", "reverse": false}, {"id": "D4", "dim": "dialectical", "text": "Противоречие в собственных взглядах для меня обычно означает, что нужно немедленно выбрать одну сторону.", "reverse": true}, {"id": "AU1", "dim": "autonomy", "text": "Если почти все вокруг уверены в чём-то, это само по себе заметно повышает мою уверенность.", "reverse": true}, {"id": "AU2", "dim": "autonomy", "text": "Мне легче быть единственным несогласным, чем согласиться с аргументом, который считаю слабым.", "reverse": false}, {"id": "AU3", "dim": "autonomy", "text": "Репутация человека влияет на мою оценку его аргумента сильнее, чем мне хотелось бы.", "reverse": true}, {"id": "AU4", "dim": "autonomy", "text": "Я стараюсь отделять качество идеи от статуса того, кто её высказал.", "reverse": false}, {"id": "C1", "dim": "control", "text": "Мне спокойнее, когда я понимаю, почему человек поступил именно так.", "reverse": false}, {"id": "C2", "dim": "control", "text": "Я могу принять, что некоторые вещи останутся непонятными и неподконтрольными.", "reverse": true}, {"id": "C3", "dim": "control", "text": "Неопределённая реакция другого человека иногда занимает мой ум сильнее, чем сама ситуация.", "reverse": false}, {"id": "C4", "dim": "control", "text": "Мне не обязательно понимать механизм происходящего, чтобы оставить ситуацию в покое.", "reverse": true}, {"id": "M1", "dim": "metacognition", "text": "Во время сильного убеждения я иногда спрашиваю себя: «почему именно сейчас мне так хочется считать это правдой?»", "reverse": false}, {"id": "M2", "dim": "metacognition", "text": "Обычно я замечаю мысль уже после того, как успел принять её за факт.", "reverse": true}, {"id": "M3", "dim": "metacognition", "text": "Я могу отличить «мне кажется» от «у меня есть хорошие основания».", "reverse": false}, {"id": "M4", "dim": "metacognition", "text": "Если мысль звучит внутри очень убедительно, я редко разбираю, откуда взялась эта убедительность.", "reverse": true}, {"id": "ER1", "dim": "emotion_reason", "text": "Сильная эмоция для меня — это информация о моём состоянии, но не доказательство того, что моя интерпретация верна.", "reverse": false}, {"id": "ER2", "dim": "emotion_reason", "text": "Когда я злюсь или боюсь, мои выводы о ситуации обычно кажутся мне более объективными.", "reverse": true}, {"id": "ER3", "dim": "emotion_reason", "text": "Я стараюсь понять, что эмоция сообщает мне, прежде чем либо подчиниться ей, либо подавить её.", "reverse": false}, {"id": "ER4", "dim": "emotion_reason", "text": "Лучшее мышление получается только тогда, когда эмоции полностью исключены.", "reverse": true}, {"id": "P1", "dim": "perspective", "text": "Я могу сформулировать позицию оппонента так, чтобы он сам сказал: «да, именно это я и имею в виду».", "reverse": false}, {"id": "P2", "dim": "perspective", "text": "Если ценности человека сильно отличаются от моих, мне трудно понять его решения изнутри.", "reverse": true}, {"id": "P3", "dim": "perspective", "text": "Мне интересно, какие предпосылки сделали бы чужую странную позицию разумной.", "reverse": false}, {"id": "P4", "dim": "perspective", "text": "Понимание чужой позиции часто кажется мне опасно близким к согласию с ней.", "reverse": true}, {"id": "EA1", "dim": "existential_agency", "text": "Смысл жизни в значительной степени создаётся тем, чему человек решает придавать значение.", "reverse": false}, {"id": "EA2", "dim": "existential_agency", "text": "Если у жизни нет заранее заданного смысла, это делает её скорее пустой.", "reverse": true}, {"id": "EA3", "dim": "existential_agency", "text": "Я воспринимаю выбор как способ формировать себя, а не только выбирать между внешними вариантами.", "reverse": false}, {"id": "EA4", "dim": "existential_agency", "text": "Главное направление жизни скорее нужно найти, чем придумать.", "reverse": true}, {"id": "AT1", "dim": "authenticity", "text": "Я предпочту внутренне честное решение социально удобному, если конфликт между ними серьёзный.", "reverse": false}, {"id": "AT2", "dim": "authenticity", "text": "Иногда лучше соответствовать ожиданиям, даже если внутри это ощущается не своим.", "reverse": true}, {"id": "AT3", "dim": "authenticity", "text": "Для меня важно, чтобы мои внешние решения не слишком расходились с тем, кем я себя считаю.", "reverse": false}, {"id": "AT4", "dim": "authenticity", "text": "Подстраиваться под контекст обычно разумнее, чем держаться за внутреннюю последовательность.", "reverse": true}, {"id": "S1", "dim": "skepticism", "text": "Когда человек объясняет свои мотивы, я часто думаю о том, что он может не понимать собственных мотивов.", "reverse": false}, {"id": "S2", "dim": "skepticism", "text": "Я обычно принимаю заявленные намерения людей за наиболее вероятное объяснение их поведения.", "reverse": true}, {"id": "S3", "dim": "skepticism", "text": "В хороших поступках я нередко замечаю и возможную вторичную выгоду.", "reverse": false}, {"id": "S4", "dim": "skepticism", "text": "По умолчанию я считаю, что люди в основном говорят себе правду о причинах своих поступков.", "reverse": true}, {"id": "SC1", "dim": "self_challenge", "text": "Если тема мне важна, я специально ищу самые сильные аргументы против своей позиции.", "reverse": false}, {"id": "SC2", "dim": "self_challenge", "text": "Мне приятнее находить подтверждения своей модели, чем искать способы её сломать.", "reverse": true}, {"id": "SC3", "dim": "self_challenge", "text": "Хороший спор для меня — тот, после которого есть шанс реально изменить мнение.", "reverse": false}, {"id": "SC4", "dim": "self_challenge", "text": "Если я уже уверен примерно на 90%, дальнейший поиск контраргументов обычно кажется мне лишним.", "reverse": true}], "likert": [[1, "Совсем не про меня"], [2, "Скорее не про меня"], [3, "По-разному / не уверен"], [4, "Скорее про меня"], [5, "Очень про меня"]], "dilemmas": [{"id": "PH1", "title": "Мораль и последствия", "prompt": "Ты можешь солгать одному человеку, и эта ложь почти наверняка спасёт пятерых от серьёзного вреда. Что для тебя ближе?", "options": [["consequence", "Соврать: последствия здесь важнее запрета на ложь."], ["duty", "Не лгать: некоторые правила нельзя нарушать даже ради хорошего исхода."], ["care", "Решение зависит прежде всего от конкретных людей, отношений и того, кого я обязан защищать."], ["context", "Без деталей я откажусь выбирать: моральность здесь слишком зависит от контекста."]]}, {"id": "PH2", "title": "Свобода и ответственность", "prompt": "Если поведение человека почти полностью объясняется генами, воспитанием и обстоятельствами, что происходит с личной ответственностью?", "options": [["compat", "Она остаётся: причинная обусловленность не отменяет ответственности."], ["hard_det", "Она сильно уменьшается: человек не мог по-настоящему выбрать иначе."], ["libertarian", "Полная ответственность требует некоторой реальной свободы от причинной предопределённости."], ["pragmatic", "Неважно, метафизически свободны мы или нет; ответственность нужна как практический общественный инструмент."]]}, {"id": "PH3", "title": "Истина и комфорт", "prompt": "Представь, что убеждение делает человека счастливее, но почти наверняка ложно. Что для тебя важнее?", "options": [["truth", "Истина, даже если она ухудшает субъективное состояние."], ["wellbeing", "Благополучие может быть важнее истины, если ошибка никому не вредит."], ["autonomy", "Важно, чтобы человек сам мог выбрать между правдой и утешением."], ["context", "Зависит от масштаба ошибки и её будущих последствий."]]}, {"id": "PH4", "title": "Личность", "prompt": "Если постепенно заменить в человеке все воспоминания, привычки и ценности, но тело останется тем же, это всё ещё тот же человек?", "options": [["body", "Да: физическая непрерывность важнее психологической."], ["psych", "Нет: личность в основном определяется психологической непрерывностью."], ["continuity", "Да, если изменения происходят непрерывно, без резкого разрыва."], ["antiessence", "Вопрос предполагает слишком жёсткое «я»; личность — процесс, а не фиксированный объект."]]}, {"id": "PH5", "title": "Справедливость", "prompt": "Что ближе к справедливому обществу?", "options": [["equal", "Максимально равные результаты."], ["merit", "Результаты пропорциональны вкладу и усилиям."], ["floor", "Неравенство допустимо, если у всех есть достойный минимум и реальные возможности."], ["liberty", "Главное — свобода добровольного выбора; равенство результатов вторично."]]}, {"id": "PH6", "title": "Добрый поступок", "prompt": "Человек помогает другому, но одновременно получает удовольствие, статус и чувство собственной значимости. Делает ли это поступок менее добрым?", "options": [["motive", "Да: чистота мотива имеет значение."], ["outcome", "Нет: если он реально помог, вторичная выгода не отменяет добро."], ["mixed", "Мотивы почти всегда смешанные; важнее их структура, а не наличие выгоды."], ["skeptical", "Сам вопрос слишком упрощает: «добро» нельзя свести ни к мотиву, ни к результату."]]}, {"id": "PH7", "title": "Смысл", "prompt": "Какое утверждение тебе ближе?", "options": [["discover", "У жизни есть смысл, который человек должен обнаружить."], ["create", "Смысл создаётся человеком через выбор и привязанности."], ["emerge", "Смысл возникает в отношениях между человеком, другими людьми и миром."], ["nihil", "Объективного смысла нет, а субъективный смысл — просто психологическая конструкция."]]}, {"id": "PH8", "title": "Кто ты?", "prompt": "Если убрать имя, профессию, социальные роли, воспоминания о прошлом и планы на будущее — что останется от «тебя»?", "options": [["subject", "Сам факт субъективного опыта: тот, кто переживает происходящее."], ["nothing", "Почти ничего: личность и есть совокупность этих слоёв."], ["body", "Живой организм и его непрерывность."], ["process", "Не объект, а текущий процесс восприятия, памяти, тела и отношений."]]}], "open": [{"id": "O1", "prompt": "Назови убеждение, которое для тебя сейчас важно. Что конкретно должно произойти, чтобы ты признал его неверным?"}, {"id": "O2", "prompt": "Вспомни случай, когда ты был очень уверен в человеке или ситуации, а потом оказался неправ. Как именно твой ум объяснял факты до того, как ты поменял мнение?"}, {"id": "O3", "prompt": "Что для тебя хуже: жить спокойно в приятной иллюзии или болезненно знать неприятную правду? Почему?"}, {"id": "O4", "prompt": "Представь человека, чьи ценности почти противоположны твоим, но он умён и искренен. Как он мог бы объяснить себе, что именно ты ошибаешься?"}, {"id": "O5", "prompt": "Если бы никто никогда не узнал о твоих решениях и не мог бы тебя оценить, что в твоём поведении изменилось бы сильнее всего?"}]};
+const statements=DATA.statements,dilemmas=DATA.dilemmas,opens=DATA.open;
+const total=statements.length+dilemmas.length+opens.length;
+document.getElementById('count').textContent=total;
+
+let state={index:0,statement:{},dilemma:{},open:{},started:null};
+const KEY='mind-map-v3';
+const $=id=>document.getElementById(id);
+
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(state));return true}
+  catch(e){$('testStatus').textContent='Прогресс не сохранился. Не закрывай эту вкладку.';return false}
+}
+function load(){
+  try{
+    const x=JSON.parse(localStorage.getItem(KEY));
+    if(x&&Number.isInteger(x.index)&&x.statement&&x.dilemma&&x.open)state=x;
+  }catch(e){localStorage.removeItem(KEY)}
+}
+if(localStorage.getItem(KEY))$('resume').classList.remove('hidden');
+
+$('start').onclick=()=>{localStorage.removeItem(KEY);state={index:0,statement:{},dilemma:{},open:{},started:Date.now()};begin()};
+$('resume').onclick=()=>{load();begin()};
+$('exit').onclick=()=>{const stored=save();$('test').classList.add('hidden');$('intro').classList.remove('hidden');$('resume').classList.remove('hidden');$('storageStatus').textContent=stored?'Прогресс сохранён на этом устройстве.':'Прогресс остался только в открытой вкладке.'};
+$('restart').onclick=()=>{if(confirm('Удалить этот результат и начать заново?')){localStorage.removeItem(KEY);location.reload()}};
+
+function begin(){$('intro').classList.add('hidden');$('results').classList.add('hidden');$('test').classList.remove('hidden');render()}
+function itemAt(i){
+  if(i<statements.length)return{type:'statement',data:statements[i],local:i};
+  i-=statements.length;
+  if(i<dilemmas.length)return{type:'dilemma',data:dilemmas[i],local:i};
+  i-=dilemmas.length;
+  return{type:'open',data:opens[i],local:i};
+}
+function hideViews(){['statementView','dilemmaView','openView'].forEach(x=>$(x).classList.add('hidden'));$('skip').classList.add('hidden');$('next').disabled=true}
+function render(){
+  if(state.index>=total){finish();return}
+  hideViews();
+  const it=itemAt(state.index);
+  $('counter').textContent=`${state.index+1} / ${total}`;
+  const pct=Math.round((state.index/total)*100);
+  $('progress').style.width=`${pct}%`;
+  document.querySelector('.progress').setAttribute('aria-valuenow',pct);
+  $('back').disabled=state.index===0;
+  $('back').style.visibility=state.index===0?'hidden':'visible';
+  $('next').textContent=state.index===total-1?'Показать результат':'Дальше';
+
+  if(it.type==='statement'){
+    $('section').textContent='Самоописание';
+    $('statementView').classList.remove('hidden');
+    $('statementText').textContent=it.data.text;
+    const box=$('likertBox');box.innerHTML='';
+    DATA.likert.forEach(([value,label])=>{
+      const b=document.createElement('button');b.className='option';b.textContent=label;b.setAttribute('aria-pressed','false');
+      if(state.statement[it.data.id]===value)b.classList.add('sel');
+      if(state.statement[it.data.id]===value)b.setAttribute('aria-pressed','true');
+      b.onclick=()=>{state.statement[it.data.id]=value;[...box.children].forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-pressed','false')});b.classList.add('sel');b.setAttribute('aria-pressed','true');$('next').disabled=false;save()};
+      box.appendChild(b);
+    });
+    $('next').disabled=state.statement[it.data.id]===undefined;
+    requestAnimationFrame(()=>$('statementText').focus({preventScroll:true}));
+  }
+  if(it.type==='dilemma'){
+    $('section').textContent='Дилемма';
+    $('dilemmaView').classList.remove('hidden');
+    $('dilemmaTitle').textContent=it.data.title;
+    $('dilemmaText').textContent=it.data.prompt;
+    const box=$('dilemmaOptions');box.innerHTML='';
+    it.data.options.forEach(([key,label])=>{
+      const b=document.createElement('button');b.className='option';b.textContent=label;b.setAttribute('aria-pressed','false');
+      if(state.dilemma[it.data.id]===key)b.classList.add('sel');
+      if(state.dilemma[it.data.id]===key)b.setAttribute('aria-pressed','true');
+      b.onclick=()=>{state.dilemma[it.data.id]=key;[...box.children].forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-pressed','false')});b.classList.add('sel');b.setAttribute('aria-pressed','true');$('next').disabled=false;save()};
+      box.appendChild(b);
+    });
+    $('next').disabled=state.dilemma[it.data.id]===undefined;
+    requestAnimationFrame(()=>$('dilemmaText').focus({preventScroll:true}));
+  }
+  if(it.type==='open'){
+    $('section').textContent='Свободный ответ';
+    $('openView').classList.remove('hidden');$('skip').classList.remove('hidden');
+    $('openText').textContent=it.data.prompt;
+    $('openAnswer').value=state.open[it.data.id]||'';
+    $('openAnswer').oninput=()=>{state.open[it.data.id]=$('openAnswer').value;save()};
+    $('next').disabled=false;
+    $('skip').onclick=()=>{state.open[it.data.id]='';state.index++;save();render()};
+  }
+}
+$('back').onclick=()=>{if(state.index>0){state.index--;save();render();window.scrollTo({top:0,behavior:'smooth'})}};
+$('next').onclick=()=>{
+  const it=itemAt(state.index);
+  if(it.type==='open')state.open[it.data.id]=$('openAnswer').value.trim();
+  state.index++;save();render();window.scrollTo({top:0,behavior:'smooth'});
+};
+
+function scoreDims(){
+  const out={};
+  Object.keys(DATA.dims).forEach(k=>out[k]=[]);
+  statements.forEach(s=>{
+    let v=state.statement[s.id];
+    if(v===undefined)return;
+    if(s.reverse)v=6-v;
+    out[s.dim].push(v);
+  });
+  const scores={};
+  for(const [k,arr] of Object.entries(out)){
+    scores[k]=arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;
+  }
+  return scores;
+}
+function interpretation(k,v){
+  const d=DATA.dims[k];
+  if(v===null)return'Нет данных.';
+  if(v<2.2)return d.low;
+  if(v>3.8)return d.high;
+  if(v<2.8)return d.low+' Выражено умеренно.';
+  if(v>3.2)return d.high+' Выражено умеренно.';
+  return 'Середина шкалы: стиль сильно зависит от ситуации и контекста.';
+}
+function philoLabel(key){
+  const m={
+    consequence:'Последствия важнее правила', duty:'Правила имеют самостоятельную ценность', care:'Этика отношений и заботы', context:'Контекстуальный подход',
+    compat:'Совместимость причинности и ответственности', hard_det:'Сильный детерминизм', libertarian:'Свобода как условие полной ответственности', pragmatic:'Практический подход к ответственности',
+    truth:'Приоритет истины', wellbeing:'Приоритет благополучия', autonomy:'Приоритет автономии выбора',
+    body:'Телесная непрерывность', psych:'Психологическая непрерывность', continuity:'Непрерывность процесса', antiessence:'Личность без фиксированной сущности',
+    equal:'Равенство результатов', merit:'Заслуга и вклад', floor:'Достойный минимум + возможности', liberty:'Свобода выбора',
+    motive:'Мотив имеет моральный вес', outcome:'Результат важнее выгоды деятеля', mixed:'Смешанные мотивы нормальны', skeptical:'Скепсис к простой морали',
+    discover:'Смысл нужно обнаружить', create:'Смысл создаётся', emerge:'Смысл возникает в отношениях', nihil:'Объективного смысла нет',
+    subject:'Я как субъект опыта', nothing:'Я как набор слоёв', process:'Я как процесс'
+  };
+  return m[key]||key;
+}
+function escapeHtml(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+const DIM_SHORT={
+  epistemic_humility:'Скромность',ambiguity:'Неопределённость',dialectical:'Диалектика',autonomy:'Автономия',
+  control:'Контроль',metacognition:'Метапознание',emotion_reason:'Эмоции + разум',perspective:'Чужой взгляд',
+  existential_agency:'Агентность',authenticity:'Аутентичность',skepticism:'Скепсис',self_challenge:'Самопроверка'
+};
+const HIGH_PHRASE={
+  epistemic_humility:'оставлять собственные выводы открытыми для пересмотра',ambiguity:'не закрывать вопрос раньше данных',dialectical:'удерживать частичную правду по обе стороны противоречия',autonomy:'отделять силу аргумента от мнения группы',control:'искать объяснимость и предсказуемость',metacognition:'наблюдать за происхождением собственных выводов',emotion_reason:'считать эмоции данными, но не доказательством',perspective:'реконструировать чужую позицию изнутри',existential_agency:'создавать направление решениями',authenticity:'сохранять внутреннюю верность себе',skepticism:'замечать вторичную выгоду и самообман',self_challenge:'искать сильные возражения к собственной модели'
+};
+const LOW_PHRASE={
+  epistemic_humility:'быстрее закреплять рабочий вывод',ambiguity:'добиваться определённой версии происходящего',dialectical:'разводить противоречащие позиции',autonomy:'учитывать консенсус и статус источника',control:'оставлять часть происходящего необъяснённой',metacognition:'сначала жить внутри мысли, а разбирать её позже',emotion_reason:'сильнее отделять чувство от рассуждения',perspective:'оценивать чужую позицию прежде, чем временно принять её рамку',existential_agency:'искать уже существующее направление и смысл',authenticity:'подстраивать поведение под ситуацию',skepticism:'начинать с доброжелательного объяснения мотивов',self_challenge:'развивать уже выбранную позицию вместо её атаки'
+};
+
+function analysisFor(scores){
+  const ranked=Object.entries(scores).filter(([,v])=>v!==null).sort((a,b)=>b[1]-a[1]);
+  const top=ranked.slice(0,2),bottom=ranked[ranked.length-1];
+  const lead=top.length<2?'Для связного разбора не хватает ответов.':`В самоописании ты чаще опираешься на способность ${HIGH_PHRASE[top[0][0]]} и ${HIGH_PHRASE[top[1][0]]}. При этом тебе сравнительно ближе ${LOW_PHRASE[bottom[0]]}.`;
+  const findings=[];
+  const add=(title,text)=>findings.push({title,text});
+  const hi=(k,n=3.65)=>scores[k]>=n,lo=(k,n=2.35)=>scores[k]<=n;
+
+  add('Главные опоры',`${DATA.dims[top[0][0]].name} (${top[0][1].toFixed(1)}) и ${DATA.dims[top[1][0]].name} (${top[1][1].toFixed(1)}) — самые выраженные части профиля. Это не «сильные стороны» автоматически: первая показывает привычный инструмент, вторая — способ его применять.`);
+
+  if(hi('epistemic_humility')&&lo('self_challenge'))add('Пересмотр без краш-теста','Ты допускаешь, что можешь ошибаться, но реже специально ищешь аргумент, способный разрушить уже удобную модель. Открытость к коррекции и активная проверка здесь расходятся.');
+  else if(hi('epistemic_humility')&&hi('self_challenge'))add('Двойная проверка','Готовность признать ошибку поддержана привычкой искать контраргументы. Риск этой связки — продолжать проверять решение после того, как данных уже достаточно.');
+  else if(lo('epistemic_humility')&&hi('self_challenge'))add('Спор как испытание','Ты охотно сталкиваешь позицию с возражениями, но это не всегда означает готовность поменять итоговый вывод. Полезный вопрос: что именно заранее считалось бы поражением модели?');
+
+  if(hi('ambiguity')&&hi('control'))add('Разные виды неопределённости','Абстрактный вопрос можно долго держать открытым, но непредсказуемость людей и ситуаций всё равно тянет внимание. Похоже, «не знать ответ» и «не управлять происходящим» для тебя не одно и то же.');
+  else if(lo('ambiguity')&&lo('control'))add('Ответ важнее управления','Необъяснённость скорее мешает, хотя контролировать саму ситуацию необязательно. Версия происходящего может быть нужна больше для завершения мысли, чем для действия.');
+
+  if(hi('autonomy')&&hi('perspective'))add('Независимость без закрытости','Ты описываешь себя одновременно как независимого от группы и способного честно собрать чужую позицию. Это позволяет не путать понимание с согласием. Проверять стоит моменты, когда чужая уверенность всё же меняет стандарт доказательства.');
+  else if(hi('autonomy')&&lo('perspective'))add('Цена независимости','Готовность идти против группы выражена сильнее, чем привычка временно входить в чужую рамку. Независимость может защищать от давления, но иногда слишком рано превращать собеседника в слабый аргумент.');
+  if(hi('perspective')&&hi('skepticism'))add('Понимание не равно доверию','Ты можешь реконструировать чужую логику и одновременно искать в ней скрытую выгоду. Это даёт сложное чтение мотивов, но повышает риск объяснить искренний поступок более хитрой версией, чем требуется.');
+  if(hi('authenticity')&&lo('autonomy'))add('Внутреннее и социальное','Верность себе важна, но мнение группы заметно участвует в оценке истинности. Возможное напряжение возникает, когда «быть собой» и «не ошибиться против всех» требуют разных решений.');
+
+  const p3=state.dilemma.PH3,p7=state.dilemma.PH7,p1=state.dilemma.PH1;
+  const truth={truth:'неприятную истину',wellbeing:'безопасное благополучие',autonomy:'право человека выбрать',context:'масштаб и последствия ошибки'}[p3];
+  const meaning={discover:'обнаруживаемый смысл',create:'смысл, создаваемый выбором',emerge:'смысл, возникающий в отношениях',nihil:'отсутствие объективного смысла'}[p7];
+  const ethics={consequence:'последствия',duty:'правило',care:'отношения и обязанность заботы',context:'недостающий контекст'}[p1];
+  if(truth&&meaning&&ethics)add('Философская рамка',`В трёх опорных дилеммах приоритет получили ${truth}, ${meaning} и ${ethics}. Это не единая школа, а набор исходных интуиций; особенно полезно смотреть, где одна из них уступает другой в реальном решении.`);
+
+  const vals=Object.values(state.statement),neutral=vals.filter(v=>v===3).length/(vals.length||1),extreme=vals.filter(v=>v===1||v===5).length/(vals.length||1);
+  if(neutral>.38)add('Осторожный самоотчёт',`${Math.round(neutral*100)}% ответов стоят в середине шкалы. Профиль чувствителен к контексту: повторное прохождение после конкретной недели может заметно изменить форму карты.`);
+  else if(extreme>.48)add('Контрастный самоотчёт',`${Math.round(extreme*100)}% ответов выбраны по краям шкалы. Ты описываешь различия уверенно; полезно проверить по одному недавнему примеру на каждую самую высокую шкалу.`);
+
+  const openAnswers=Object.values(state.open).filter(x=>x&&x.trim());
+  if(openAnswers.length){
+    const average=Math.round(openAnswers.reduce((n,x)=>n+x.trim().length,0)/openAnswers.length);
+    const conditional=openAnswers.filter(x=>/\b(если|зависит|кроме|пока|при условии)\b/i.test(x)).length;
+    const o1=(state.open.O1||'').trim();
+    const detail=conditional?`В ${conditional} из ${openAnswers.length} ответов есть явные условия или оговорки.`:'Условий и оговорок в формулировках немного.';
+    add('Как написаны свободные ответы',`Заполнено ${openAnswers.length} из ${opens.length}; средняя длина — ${average} знаков. ${detail} ${o1.length>80?'Первый ответ достаточно развёрнут, чтобы отдельно проверить критерий смены убеждения.':'Критерий смены важного убеждения стоит сформулировать наблюдаемым событием, а не общим ощущением.'}`);
+  }
+
+  const desirable=['epistemic_humility','metacognition','perspective','self_challenge'].filter(k=>hi(k,3.8)).map(k=>DATA.dims[k].name.toLowerCase());
+  if(desirable.length)add('Где возможна разница между образом и поведением',`Высоко отмечены социально одобряемые качества: ${desirable.join(', ')}. Это может быть точным описанием, но тест фиксирует представление о себе. Проверь его на последнем споре, ошибке или решении под давлением.`);
+  return {lead,findings:findings.slice(0,6)};
+}
+
+function drawMindMap(scores){
+  const canvas=$('mindMap'),ctx=canvas.getContext('2d'),keys=Object.keys(DATA.dims),cx=360,cy=360,maxR=220;
+  const css=getComputedStyle(document.documentElement),fg=css.getPropertyValue('--fg').trim(),mute=css.getPropertyValue('--mute').trim(),line=css.getPropertyValue('--line').trim(),accent=css.getPropertyValue('--accent').trim();
+  ctx.clearRect(0,0,720,720);ctx.lineWidth=2;ctx.font='500 20px "Segoe UI", sans-serif';
+  for(let ring=1;ring<=4;ring++){
+    ctx.beginPath();keys.forEach((k,i)=>{const a=-Math.PI/2+i*Math.PI*2/keys.length,r=maxR*ring/4,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();ctx.strokeStyle=line;ctx.stroke();
+  }
+  keys.forEach((k,i)=>{const a=-Math.PI/2+i*Math.PI*2/keys.length;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*maxR,cy+Math.sin(a)*maxR);ctx.strokeStyle=line;ctx.stroke()});
+  ctx.beginPath();keys.forEach((k,i)=>{const a=-Math.PI/2+i*Math.PI*2/keys.length,r=maxR*Math.max(0,(scores[k]-1)/4),x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();ctx.globalAlpha=.16;ctx.fillStyle=accent;ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle=accent;ctx.lineWidth=5;ctx.stroke();
+  keys.forEach((k,i)=>{const a=-Math.PI/2+i*Math.PI*2/keys.length,r=maxR+28,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;ctx.fillStyle=fg;ctx.textAlign=Math.cos(a)>.25?'left':Math.cos(a)<-.25?'right':'center';ctx.textBaseline=Math.sin(a)>.5?'top':Math.sin(a)<-.5?'bottom':'middle';ctx.fillText(DIM_SHORT[k],x,y)});
+  const label=keys.map(k=>`${DATA.dims[k].name}: ${scores[k].toFixed(1)} из 5`).join('. ');canvas.setAttribute('aria-label',label);
+}
+
+function finish(){
+  save();$('test').classList.add('hidden');$('results').classList.remove('hidden');$('intro').classList.add('hidden');
+  const vals=Object.values(state.statement);
+  $('answeredStat').textContent=(vals.length+Object.keys(state.dilemma).length+Object.values(state.open).filter(x=>x&&x.trim()).length)+'/'+total;
+  $('extremeStat').textContent=vals.length?Math.round(vals.filter(v=>v===1||v===5).length/vals.length*100)+'%':'—';
+  $('neutralStat').textContent=vals.length?Math.round(vals.filter(v=>v===3).length/vals.length*100)+'%':'—';
+
+  const scores=scoreDims(),analysis=analysisFor(scores),box=$('scales');box.innerHTML='';
+  $('analysisLead').textContent=analysis.lead;
+  const points=$('analysisPoints');points.innerHTML='';
+  analysis.findings.forEach(item=>{const div=document.createElement('div');div.className='finding';const h=document.createElement('h3');h.textContent=item.title;const p=document.createElement('p');p.textContent=item.text;div.append(h,p);points.appendChild(div)});
+  drawMindMap(scores);
+  Object.entries(scores).sort((a,b)=>(b[1]??0)-(a[1]??0)).forEach(([k,v])=>{
+    const d=document.createElement('div');d.className='scale';
+    const pct=v===null?0:((v-1)/4*100);
+    d.innerHTML=`<div class="scalehead"><b>${DATA.dims[k].name}</b><span class="score">${v===null?'—':v.toFixed(1)}/5</span></div><div class="bar"><i style="width:${pct}%"></i></div><p class="muted small">${interpretation(k,v)}</p>`;
+    box.appendChild(d);
+  });
+
+  const pb=$('philo');pb.innerHTML='';
+  dilemmas.forEach(d=>{
+    const choice=state.dilemma[d.id];
+    const label=choice?philoLabel(choice):'Нет ответа';
+    const div=document.createElement('div');div.className='choice';
+    div.innerHTML=`<h3>${escapeHtml(d.title)}</h3><p class="muted">${escapeHtml(label)}</p>`;
+    pb.appendChild(div);
+  });
+
+  const ob=$('openReview');ob.innerHTML='';
+  opens.forEach(o=>{
+    const div=document.createElement('div');div.className='open-item';
+    div.innerHTML=`<h3>${escapeHtml(o.prompt)}</h3><p class="muted">${state.open[o.id]?.trim()?escapeHtml(state.open[o.id]):'Пропущено'}</p>`;
+    ob.appendChild(div);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function report(){
+  const scores=scoreDims();
+  const analysis=analysisFor(scores);
+  let out='КАРТА МЫШЛЕНИЯ — ФИЛОСОФИЯ И ПСИХОЛОГИЯ\\n\\nСВЯЗНЫЙ РАЗБОР\\n'+analysis.lead+'\\n';
+  analysis.findings.forEach(x=>out+=`\\n${x.title}\\n${x.text}\\n`);
+  out+='\\nШКАЛЫ (1–5)\\n';
+  Object.entries(scores).sort((a,b)=>(b[1]??0)-(a[1]??0)).forEach(([k,v])=>{
+    out+=`- ${DATA.dims[k].name}: ${v===null?'нет данных':v.toFixed(2)}\\n`;
+  });
+  out+='\\nФИЛОСОФСКИЕ ДИЛЕММЫ\\n';
+  dilemmas.forEach(d=>{
+    const choice=state.dilemma[d.id];
+    const selected=d.options.find(x=>x[0]===choice);
+    out+=`\\n${d.title}\\nВопрос: ${d.prompt}\\nМой ответ: ${selected?selected[1]:'(нет ответа)'}\\n`;
+  });
+  out+='\\nОТКРЫТЫЕ ОТВЕТЫ\\n';
+  opens.forEach(o=>out+=`\\n${o.prompt}\\n${state.open[o.id]||'(пропущено)'}\\n`);
+  out+='\\nРазбери это как карту моего мышления, а не как тест на правильность. Ищи внутренние противоречия, философские предпосылки, отношение к истине, неопределённости, контролю, морали, другим людям и собственному “я”. Не ставь диагнозы и не выдавай результаты за клиническую психодиагностику. Отдельно укажи, где мои ответы могут быть самоописанием, а не реальным поведением.';
+  return out;
+}
+$('copy').onclick=async()=>{
+  const txt=report();
+  try{await navigator.clipboard.writeText(txt);$('copy').textContent='Скопировано';$('resultStatus').textContent='Отчёт скопирован.';setTimeout(()=>$('copy').textContent='Скопировать отчёт',1400)}
+  catch(e){prompt('Скопируй текст:',txt)}
+};
+$('json').onclick=()=>{
+  const scores=scoreDims(),blob=new Blob([JSON.stringify({state,scores,analysis:analysisFor(scores)},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mind-map-results.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)
+};
+</script>
+</body>
+</html>
+
