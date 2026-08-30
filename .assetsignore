@@ -1,0 +1,9 @@
+.git/
+.gitignore
+.assetsignore
+wrangler.jsonc
+src/
+README.md
+PRODUCT.md
+DESIGN.md
+AUDIT.md

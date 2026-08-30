@@ -1,9 +1,13 @@
-// Cloudflare Pages Function: POST /api/analyze
-// Sends the test payload to DeepSeek and returns a short strengths/weaknesses write-up.
-// Required setup in the Cloudflare Pages dashboard (see README.md):
-//   - Environment variable DEEPSEEK_API_KEY (secret)
-//   - Optional DEEPSEEK_MODEL (defaults to "deepseek-chat")
-//   - KV binding RATE_LIMIT_KV (used to enforce one analysis per IP per day)
+// Worker script for the "test" Cloudflare Worker (git-connected, Workers Builds).
+// Static files (index.html, _headers) are served directly from the assets
+// binding configured in wrangler.jsonc; only /api/* is routed here
+// (see assets.run_worker_first). This handles POST /api/analyze: it sends
+// the test payload to DeepSeek and returns a short strengths/weaknesses write-up.
+//
+// Required setup in the Cloudflare dashboard (see README.md):
+//   - Settings → Variables and Secrets: DEEPSEEK_API_KEY (secret)
+//   - Optional Settings → Variables and Secrets: DEEPSEEK_MODEL (defaults to "deepseek-chat")
+//   - Bindings → KV namespace: RATE_LIMIT_KV (enforces one analysis per IP per day)
 
 const SYSTEM_PROMPT = `Ты — внимательный аналитик данных. Тебе присылают JSON с ответами человека на авторский психологический тест «Карта мышления»: утверждения по 12 шкалам мышления с выбранным вариантом согласия, философские дилеммы с выбранным вариантом и (не всегда) свободные текстовые ответы о себе.
 
@@ -19,9 +23,20 @@ const SYSTEM_PROMPT = `Ты — внимательный аналитик дан
 - Не добавляй вступления, дисклеймеры о том, что ты ИИ, и не задавай встречных вопросов — сразу выдай разбор.
 - Обычный текст без markdown-разметки (без **, #, списков через звёздочки). Уложись примерно в 250-350 слов.`;
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname !== '/api/analyze') {
+      return new Response('Not found', { status: 404 });
+    }
+    if (request.method !== 'POST') {
+      return jsonResponse({ error: 'Метод не поддерживается.' }, 405);
+    }
+    return handleAnalyze(request, env);
+  }
+};
 
+async function handleAnalyze(request, env) {
   let body;
   try {
     body = await request.json();
