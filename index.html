@@ -5,12 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Карта мышления — философия и психология</title>
 <meta name="description" content="Авторский тест о том, как ты работаешь с истиной, неопределённостью, моралью и собственными убеждениями.">
-<meta name="theme-color" content="#eef5ff">
+<meta name="theme-color" content="#eef5ff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12161f" media="(prefers-color-scheme: dark)">
 <style>
 :root{
   --bg:oklch(0.965 0.018 254);--fg:oklch(0.235 0.035 258);--mute:oklch(0.50 0.035 258);
   --accent:oklch(0.52 0.17 262);--line:oklch(0.85 0.028 254);--danger:oklch(0.56 0.19 28);
   --r-0:0;--r-sm:6px;--r-md:14px;--sheet:color-mix(in oklch,var(--bg) 68%,white);
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:oklch(0.22 0.02 258);--fg:oklch(0.93 0.015 254);--mute:oklch(0.68 0.02 254);
+    --accent:oklch(0.75 0.14 262);--line:oklch(0.34 0.025 258);--danger:oklch(0.7 0.16 28);
+    --sheet:color-mix(in oklch,var(--bg) 74%,black);
+  }
+  .primary{color:oklch(0.16 0.02 258)}
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -256,6 +265,12 @@ $('next').onclick=()=>{
   if(it.type==='open')state.open[it.data.id]=$('openAnswer').value.trim();
   state.index++;save();render();window.scrollTo({top:0,behavior:'smooth'});
 };
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if($('test').classList.contains('hidden')||$('statementView').classList.contains('hidden'))return;
+  const n=Number(e.key);
+  if(n>=1&&n<=5){const btns=$('likertBox').children;if(btns[n-1])btns[n-1].click()}
+});
 
 function scoreDims(){
   const out={};
@@ -271,6 +286,19 @@ function scoreDims(){
     scores[k]=arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;
   }
   return scores;
+}
+function dimSpread(){
+  const out={};
+  Object.keys(DATA.dims).forEach(k=>out[k]=[]);
+  statements.forEach(s=>{
+    let v=state.statement[s.id];
+    if(v===undefined)return;
+    if(s.reverse)v=6-v;
+    out[s.dim].push(v);
+  });
+  const spread={};
+  for(const [k,arr] of Object.entries(out))spread[k]=arr.length?Math.max(...arr)-Math.min(...arr):null;
+  return spread;
 }
 function interpretation(k,v){
   const d=DATA.dims[k];
@@ -308,7 +336,7 @@ const LOW_PHRASE={
   epistemic_humility:'быстрее закреплять рабочий вывод',ambiguity:'добиваться определённой версии происходящего',dialectical:'разводить противоречащие позиции',autonomy:'учитывать консенсус и статус источника',control:'оставлять часть происходящего необъяснённой',metacognition:'сначала жить внутри мысли, а разбирать её позже',emotion_reason:'сильнее отделять чувство от рассуждения',perspective:'оценивать чужую позицию прежде, чем временно принять её рамку',existential_agency:'искать уже существующее направление и смысл',authenticity:'подстраивать поведение под ситуацию',skepticism:'начинать с доброжелательного объяснения мотивов',self_challenge:'развивать уже выбранную позицию вместо её атаки'
 };
 
-function analysisFor(scores){
+function analysisFor(scores,spread){
   const ranked=Object.entries(scores).filter(([,v])=>v!==null).sort((a,b)=>b[1]-a[1]);
   const top=ranked.slice(0,2),bottom=ranked[ranked.length-1];
   const lead=top.length<2?'Для связного разбора не хватает ответов.':`В самоописании ты чаще опираешься на способность ${HIGH_PHRASE[top[0][0]]} и ${HIGH_PHRASE[top[1][0]]}. При этом тебе сравнительно ближе ${LOW_PHRASE[bottom[0]]}.`;
@@ -340,6 +368,9 @@ function analysisFor(scores){
   if(neutral>.38)add('Осторожный самоотчёт',`${Math.round(neutral*100)}% ответов стоят в середине шкалы. Профиль чувствителен к контексту: повторное прохождение после конкретной недели может заметно изменить форму карты.`);
   else if(extreme>.48)add('Контрастный самоотчёт',`${Math.round(extreme*100)}% ответов выбраны по краям шкалы. Ты описываешь различия уверенно; полезно проверить по одному недавнему примеру на каждую самую высокую шкалу.`);
 
+  const uniqueVals=new Set(vals).size;
+  if(vals.length>=30&&uniqueVals<=2)add('Однообразные ответы',`На ${vals.length} утверждений использовано только ${uniqueVals} значения шкалы. Возможно, часть ответов отмечена быстро, без учёта конкретной формулировки — есть смысл перепройти утверждения ещё раз.`);
+
   const openAnswers=Object.values(state.open).filter(x=>x&&x.trim());
   if(openAnswers.length){
     const average=Math.round(openAnswers.reduce((n,x)=>n+x.trim().length,0)/openAnswers.length);
@@ -351,7 +382,10 @@ function analysisFor(scores){
 
   const desirable=['epistemic_humility','metacognition','perspective','self_challenge'].filter(k=>hi(k,3.8)).map(k=>DATA.dims[k].name.toLowerCase());
   if(desirable.length)add('Где возможна разница между образом и поведением',`Высоко отмечены социально одобряемые качества: ${desirable.join(', ')}. Это может быть точным описанием, но тест фиксирует представление о себе. Проверь его на последнем споре, ошибке или решении под давлением.`);
-  return {lead,findings:findings.slice(0,6)};
+
+  const inconsistent=spread?Object.entries(spread).filter(([,s])=>s!==null&&s>=3).map(([k])=>DATA.dims[k].name):[];
+  if(inconsistent.length)add('Разброс внутри одной шкалы',`В шкалах «${inconsistent.join('», «')}» отдельные утверждения получили заметно разные ответы. Средний балл здесь стоит читать осторожнее: поведение может сильно зависеть от ситуации, либо стоит перечитать формулировки этих утверждений ещё раз.`);
+  return {lead,findings:findings.slice(0,8)};
 }
 
 function drawMindMap(scores){
@@ -374,7 +408,7 @@ function finish(){
   $('extremeStat').textContent=vals.length?Math.round(vals.filter(v=>v===1||v===5).length/vals.length*100)+'%':'—';
   $('neutralStat').textContent=vals.length?Math.round(vals.filter(v=>v===3).length/vals.length*100)+'%':'—';
 
-  const scores=scoreDims(),analysis=analysisFor(scores),box=$('scales');box.innerHTML='';
+  const scores=scoreDims(),spread=dimSpread(),analysis=analysisFor(scores,spread),box=$('scales');box.innerHTML='';
   $('analysisLead').textContent=analysis.lead;
   const points=$('analysisPoints');points.innerHTML='';
   analysis.findings.forEach(item=>{const div=document.createElement('div');div.className='finding';const h=document.createElement('h3');h.textContent=item.title;const p=document.createElement('p');p.textContent=item.text;div.append(h,p);points.appendChild(div)});
@@ -405,23 +439,23 @@ function finish(){
 }
 
 function report(){
-  const scores=scoreDims();
-  const analysis=analysisFor(scores);
-  let out='КАРТА МЫШЛЕНИЯ — ФИЛОСОФИЯ И ПСИХОЛОГИЯ\\n\\nСВЯЗНЫЙ РАЗБОР\\n'+analysis.lead+'\\n';
-  analysis.findings.forEach(x=>out+=`\\n${x.title}\\n${x.text}\\n`);
-  out+='\\nШКАЛЫ (1–5)\\n';
+  const scores=scoreDims(),spread=dimSpread();
+  const analysis=analysisFor(scores,spread);
+  let out='КАРТА МЫШЛЕНИЯ — ФИЛОСОФИЯ И ПСИХОЛОГИЯ\n\nСВЯЗНЫЙ РАЗБОР\n'+analysis.lead+'\n';
+  analysis.findings.forEach(x=>out+=`\n${x.title}\n${x.text}\n`);
+  out+='\nШКАЛЫ (1–5)\n';
   Object.entries(scores).sort((a,b)=>(b[1]??0)-(a[1]??0)).forEach(([k,v])=>{
-    out+=`- ${DATA.dims[k].name}: ${v===null?'нет данных':v.toFixed(2)}\\n`;
+    out+=`- ${DATA.dims[k].name}: ${v===null?'нет данных':v.toFixed(2)}\n`;
   });
-  out+='\\nФИЛОСОФСКИЕ ДИЛЕММЫ\\n';
+  out+='\nФИЛОСОФСКИЕ ДИЛЕММЫ\n';
   dilemmas.forEach(d=>{
     const choice=state.dilemma[d.id];
     const selected=d.options.find(x=>x[0]===choice);
-    out+=`\\n${d.title}\\nВопрос: ${d.prompt}\\nМой ответ: ${selected?selected[1]:'(нет ответа)'}\\n`;
+    out+=`\n${d.title}\nВопрос: ${d.prompt}\nМой ответ: ${selected?selected[1]:'(нет ответа)'}\n`;
   });
-  out+='\\nОТКРЫТЫЕ ОТВЕТЫ\\n';
-  opens.forEach(o=>out+=`\\n${o.prompt}\\n${state.open[o.id]||'(пропущено)'}\\n`);
-  out+='\\nРазбери это как карту моего мышления, а не как тест на правильность. Ищи внутренние противоречия, философские предпосылки, отношение к истине, неопределённости, контролю, морали, другим людям и собственному “я”. Не ставь диагнозы и не выдавай результаты за клиническую психодиагностику. Отдельно укажи, где мои ответы могут быть самоописанием, а не реальным поведением.';
+  out+='\nОТКРЫТЫЕ ОТВЕТЫ\n';
+  opens.forEach(o=>out+=`\n${o.prompt}\n${state.open[o.id]||'(пропущено)'}\n`);
+  out+='\nРазбери это как карту моего мышления, а не как тест на правильность. Ищи внутренние противоречия, философские предпосылки, отношение к истине, неопределённости, контролю, морали, другим людям и собственному “я”. Не ставь диагнозы и не выдавай результаты за клиническую психодиагностику. Отдельно укажи, где мои ответы могут быть самоописанием, а не реальным поведением.';
   return out;
 }
 $('copy').onclick=async()=>{
@@ -430,7 +464,7 @@ $('copy').onclick=async()=>{
   catch(e){prompt('Скопируй текст:',txt)}
 };
 $('json').onclick=()=>{
-  const scores=scoreDims(),blob=new Blob([JSON.stringify({state,scores,analysis:analysisFor(scores)},null,2)],{type:'application/json'});
+  const scores=scoreDims(),spread=dimSpread(),blob=new Blob([JSON.stringify({state,scores,spread,analysis:analysisFor(scores,spread)},null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mind-map-results.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)
 };
 </script>
