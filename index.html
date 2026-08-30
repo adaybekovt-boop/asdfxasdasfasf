@@ -76,6 +76,7 @@ textarea::placeholder{color:color-mix(in oklch,var(--mute) 70%,var(--bg))}
 .philo{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}.choice{padding:16px 0;border-bottom:1px solid var(--line)}.choice p{margin:4px 0 0}
 .open-item{padding:18px 0;border-bottom:1px solid var(--line)}.open-item p{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
 .limit{font-size:13px;color:var(--mute);margin-top:34px;max-width:720px}
+.ai-result{white-space:pre-wrap;line-height:1.6;margin-top:18px;max-width:720px}
 .error{color:var(--danger);font-weight:650}.status{min-height:20px;margin-top:12px;color:var(--mute);font-size:13px}
 @media(max-width:760px){
   .wrap{padding:0}.sheet{border:0;border-radius:var(--r-0);min-height:100svh;padding:20px 16px 48px}.mast{margin-bottom:42px}
@@ -159,6 +160,14 @@ textarea::placeholder{color:color-mix(in oklch,var(--mute) 70%,var(--bg))}
   <section class="section" aria-labelledby="scalesTitle"><h2 id="scalesTitle">12 шкал</h2><div id="scales"></div></section>
   <section class="section" aria-labelledby="philoTitle"><h2 id="philoTitle">Философские выборы</h2><div class="philo" id="philo"></div></section>
   <section class="section" aria-labelledby="openTitle"><h2 id="openTitle">Ответы своими словами</h2><div id="openReview"></div></section>
+
+  <section class="section" aria-labelledby="aiTitle">
+    <h2 id="aiTitle">Проверка ответов через ИИ</h2>
+    <p class="muted small">Разбор строит внешняя модель (DeepSeek) по твоим ответам — отдельно от метода выше. Доступно раз в сутки.</p>
+    <button id="aiCheck" class="primary">Проверить ответы</button>
+    <div id="aiStatus" class="status" role="status" aria-live="polite"></div>
+    <div id="aiResult" class="ai-result hidden"></div>
+  </section>
 
   <p class="limit"><b>Граница метода.</b> Это авторский исследовательский тест, не клиническая психодиагностика и не валидированный личностный опросник. Результат годится как повод для разговора и самопроверки, но не как диагноз.</p>
   <div class="button-row">
@@ -435,6 +444,7 @@ function finish(){
     div.innerHTML=`<h3>${escapeHtml(o.prompt)}</h3><p class="muted">${state.open[o.id]?.trim()?escapeHtml(state.open[o.id]):'Пропущено'}</p>`;
     ob.appendChild(div);
   });
+  updateAiButton();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -458,6 +468,60 @@ function report(){
   out+='\nРазбери это как карту моего мышления, а не как тест на правильность. Ищи внутренние противоречия, философские предпосылки, отношение к истине, неопределённости, контролю, морали, другим людям и собственному “я”. Не ставь диагнозы и не выдавай результаты за клиническую психодиагностику. Отдельно укажи, где мои ответы могут быть самоописанием, а не реальным поведением.';
   return out;
 }
+
+const AI_KEY='mind-map-ai-last';
+function today(){return new Date().toISOString().slice(0,10)}
+function aiUsedToday(){try{return localStorage.getItem(AI_KEY)===today()}catch(e){return false}}
+function markAiUsed(){try{localStorage.setItem(AI_KEY,today())}catch(e){}}
+function buildAiPayload(){
+  return{
+    statements:statements.map(s=>{
+      const v=state.statement[s.id];
+      const label=v===undefined?null:(DATA.likert.find(([val])=>val===v)||[])[1]||null;
+      return{text:s.text,answer:label};
+    }),
+    dilemmas:dilemmas.map(d=>{
+      const choice=state.dilemma[d.id];
+      const selected=d.options.find(x=>x[0]===choice);
+      return{title:d.title,prompt:d.prompt,answer:selected?selected[1]:null};
+    }),
+    open:opens.map(o=>({prompt:o.prompt,answer:(state.open[o.id]||'').trim()||null}))
+  };
+}
+function updateAiButton(){
+  if(aiUsedToday()){
+    $('aiCheck').disabled=true;
+    $('aiStatus').textContent='Сегодня уже использовано. Возвращайся завтра.';
+  }else{
+    $('aiCheck').disabled=false;
+    $('aiStatus').textContent='';
+  }
+}
+$('aiCheck').onclick=async()=>{
+  $('aiCheck').disabled=true;
+  $('aiStatus').textContent='Отправляю ответы на анализ…';
+  $('aiResult').classList.add('hidden');
+  try{
+    const res=await fetch('/api/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({payload:buildAiPayload()})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      $('aiStatus').textContent=data.error||'Не удалось получить анализ.';
+      $('aiCheck').disabled=aiUsedToday();
+      return;
+    }
+    $('aiResult').textContent=data.analysis;
+    $('aiResult').classList.remove('hidden');
+    $('aiStatus').textContent='Готово.';
+    markAiUsed();
+  }catch(e){
+    $('aiStatus').textContent='Сеть недоступна. Попробуй позже.';
+    $('aiCheck').disabled=false;
+  }
+};
 $('copy').onclick=async()=>{
   const txt=report();
   try{await navigator.clipboard.writeText(txt);$('copy').textContent='Скопировано';$('resultStatus').textContent='Отчёт скопирован.';setTimeout(()=>$('copy').textContent='Скопировать отчёт',1400)}
